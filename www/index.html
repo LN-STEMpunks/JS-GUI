@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+</head>
+<body>
+
+<!-- This starts the NetworkTables websocket, it can be accessed from multiple
+     pages simultaneously -->
+<script src="/networktables/networktables.js"></script>
+
+<!-- Obviously, you will want to copy this file locally in a real 
+     dashboard, as the Driver Station won't have internet access -->
+<script src="https://code.jquery.com/jquery-2.2.2.min.js"></script>
+
+<!-- uncomment this is you want to use included utility functions that
+     implement common functionality that you might find useful. Requires
+     that d3.js and jQuery are included first -->
+<!-- <script src="/networktables/utils.js"></script> -->
+
+<div>
+	NetworkTables: <span id="connectstate">Unknown state</span><br/>
+	Robot: <span id="robotstate">Unknown state</span> @ <span id="robotAddress">disconnected</span>
+</div>
+<hr/>
+
+<script type="text/javascript">
+"use strict";
+
+$(document).ready(function(){
+
+	// sets a function that will be called when the websocket connects/disconnects
+	NetworkTables.addWsConnectionListener(onNetworkTablesConnection, true);
+	
+	// sets a function that will be called when the robot connects/disconnects
+	NetworkTables.addRobotConnectionListener(onRobotConnection, true);
+	
+	// sets a function that will be called when any NetworkTables key/value changes
+	NetworkTables.addGlobalListener(onValueChanged, true);
+});
+
+
+function onRobotConnection(connected) {
+	$('#robotstate').text(connected ? "Connected!" : "Disconnected");
+	$('#robotAddress').text(connected ? NetworkTables.getRobotAddress() : "disconnected");
+}
+
+function onNetworkTablesConnection(connected) {
+	if (connected) {
+		$("#connectstate").text("Connected!");
+	} else {
+		$("#connectstate").text("Disconnected!");
+	}
+}
+
+function onValueChanged(key, value, isNew) {
+	var selector = "" + NetworkTables.keySelector(key);
+	console.log(selector);
+	if (isNew) {
+		var spn = document.createElement("span");
+		spn.setAttribute("id", selector);
+		spn.innerHTML = value;	
+	} else {
+		document.getElementById(selector).innerHTML = value;
+	}
+}
+
+</script>
+
+</body>
+</html>

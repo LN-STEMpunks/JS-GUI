@@ -1,0 +1,61 @@
+/* Set background */
+body {
+  background: #666;
+}
+
+/* Removes padding and margin */
+.noextra {
+  padding: 0px !important;
+  margin: 0px !important;
+}
+
+/* Normalizes the grid design */
+.content-grid {
+  float: left;
+  margin: 50px;
+  max-width: 300px;
+}
+
+/* Generic title */
+.div-title {
+  text-align: center;
+  justify-content: center;
+  align-items: center; 
+  padding-top: 0px !important;
+}
+
+/* used for formatting */
+.status {
+    width: 250px;
+}
+
+/* Formatting for a table of values */
+.table {
+  margin: 25px;
+  clear: both;
+}
+
+/* Card section */
+.card {
+  float: left;
+  background: #fff;
+  border-radius: 2px;
+  display: inline-block;
+  margin: 25px;
+  position: relative;
+}
+
+.card-small {
+  margin-left: 25px;
+  margin-right: 25px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+.card-1 {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.card-2 {
+  box-shadow: 2px 2px 2px rgba(0,0,0,0.25), -2px 2px 2px rgba(0,0,0,0.22);
+}

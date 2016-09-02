@@ -1,71 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="utf-8">
-</head>
-<body>
+	<head>
+		<meta charset="utf-8">
+	</head>
+	<body>
 
-<!-- This starts the NetworkTables websocket, it can be accessed from multiple
-     pages simultaneously -->
-<script src="/networktables/networktables.js"></script>
+		<!--  NetworkTables libraries  -->
+		<script src="/networktables/networktables.js"></script>
 
-<!-- Obviously, you will want to copy this file locally in a real 
-     dashboard, as the Driver Station won't have internet access -->
-<script src="https://code.jquery.com/jquery-2.2.2.min.js"></script>
+		<!--  JQuery  -->
+		<script src="https://code.jquery.com/jquery-2.2.2.min.js"></script>
 
-<!-- uncomment this is you want to use included utility functions that
-     implement common functionality that you might find useful. Requires
-     that d3.js and jQuery are included first -->
-<!-- <script src="/networktables/utils.js"></script> -->
+		<!--  MaterialDesign  -->
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+		<link rel="stylesheet" href="https://code.getmdl.io/1.2.0/material.indigo-pink.min.css">
+		<script defer src="https://code.getmdl.io/1.2.0/material.min.js"></script>
 
-<div>
-	NetworkTables: <span id="connectstate">Unknown state</span><br/>
-	Robot: <span id="robotstate">Unknown state</span> @ <span id="robotAddress">disconnected</span>
-</div>
-<hr/>
+		<!-- Local CSS  -->
+		<link rel="stylesheet" href="./main.css">
 
-<script type="text/javascript">
-"use strict";
+		<!--  We use cards to organize  -->
+		<div class="card card-1 status">
+			<ul class="status demo-list-control mdl-list noextra">
+				<div class="card card-2 noextra">
+					<li class="mdl-list__item status">
+						<span class="mdl-list__item-primary-content div-title">Connections</span>
+					</li>
+				</div>
+				<li class="mdl-list__item status">
+					<span class="mdl-list__item-primary-content">NetworkTable</span>
+					<span class="mdl-list__item-secondary-action">
+						<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="networktablesinfo">
+							<input type="checkbox" id="networktablesinfo" class="mdl-checkbox__input" checked=false/>
+						</label>
+					</span>
+				</li>
+				<li class="mdl-list__item status">
+					<span class="mdl-list__item-primary-content">Robot</span>
+					<span class="mdl-list__item-secondary-action">
+						<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="robotinfo">
+							<input type="checkbox" id="robotinfo" class="mdl-checkbox__input"  checked=false/>
+						</label>
+					</span>
+				</li>
+			</ul>
+		</div>
+		
+		<!--  We programatically add in entries below  -->
+		<div class="card card-1 status">
+			<ul id="networktable" class="status demo-list-control mdl-list noextra">
+				<div class="card card-2 noextra">
+					<li class="mdl-list__item status">
+						<span class="mdl-list__item-primary-content div-title">
+							NetworkTables
+						</span>
+					</li>
+				</div>
+			</ul>
+		</div>
 
-$(document).ready(function(){
+		<script type="text/javascript">
+			$(document).ready(function(){
+				
+				// sets a function that will be called when the websocket connects/disconnects
+				NetworkTables.addWsConnectionListener(onNetworkTablesConnection, true);
+				
+				// sets a function that will be called when the robot connects/disconnects
+				NetworkTables.addRobotConnectionListener(onRobotConnection, true);
+				
+				// sets a function that will be called when any NetworkTables key/value changes
+				NetworkTables.addGlobalListener(onValueChanged, true);
+			});
 
-	// sets a function that will be called when the websocket connects/disconnects
-	NetworkTables.addWsConnectionListener(onNetworkTablesConnection, true);
-	
-	// sets a function that will be called when the robot connects/disconnects
-	NetworkTables.addRobotConnectionListener(onRobotConnection, true);
-	
-	// sets a function that will be called when any NetworkTables key/value changes
-	NetworkTables.addGlobalListener(onValueChanged, true);
-});
 
+			function onRobotConnection(connected) {
+				//Sets the info to checked
+				$("#robotinfo").prop("checked", connected);
+			}
 
-function onRobotConnection(connected) {
-	$('#robotstate').text(connected ? "Connected!" : "Disconnected");
-	$('#robotAddress').text(connected ? NetworkTables.getRobotAddress() : "disconnected");
-}
+			function onNetworkTablesConnection(connected) {
+				//Sets the info to checked
+				$("#networktablesinfo").prop("checked", connected);
+			}
 
-function onNetworkTablesConnection(connected) {
-	if (connected) {
-		$("#connectstate").text("Connected!");
-	} else {
-		$("#connectstate").text("Disconnected!");
-	}
-}
-
-function onValueChanged(key, value, isNew) {
-	var selector = "" + NetworkTables.keySelector(key);
-	console.log(selector);
-	if (isNew) {
-		var spn = document.createElement("span");
-		spn.setAttribute("id", selector);
-		spn.innerHTML = value;	
-	} else {
-		document.getElementById(selector).innerHTML = value;
-	}
-}
-
-</script>
-
-</body>
+			function onValueChanged(key, value, isNew) {
+				//We create a new div in the table
+				if (isNew) {
+					//Create new list item
+					var li = $('<li class="mdl-list__item status"></li>').appendTo('#networktable');
+					//set the two spans
+					$('<span class="mdl-list__item-primary-content"></span>').attr('id', NetworkTables.keySelector(key) + "tablepath").text(key).appendTo(li);
+					$('<span class="mdl-list__item-secondary-content"></span>').attr('id', NetworkTables.keySelector(key) + "table").text(value).appendTo(li);
+				} else {
+					//Update the value
+					document.getElementById(NetworkTables.keySelector(key) + "table").textContent = value;
+				}
+			}
+		</script>
+	</body>
 </html>

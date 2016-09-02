@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 '''
-    This is an example server application, using the tornado handlers,
-    that you can use to connect your HTML/Javascript dashboard code to
-    your robot via NetworkTables.
-
-    Run this application with python, then you can open your browser to 
-    http://localhost:8888/ to view the index.html page.
+    Set your defaults in `config.json`
 '''
 
 from os.path import abspath, dirname, exists, join
@@ -18,6 +13,12 @@ from networktables import NetworkTable
 from pynetworktables2js import get_handlers, NonCachingStaticFileHandler
 
 import logging
+import json
+from pprint import pprint
+
+with open('config.json') as data_file:    
+    config = json.load(data_file)
+
 logger = logging.getLogger('dashboard')
 
 log_datefmt = "%H:%M:%S"
@@ -42,13 +43,13 @@ if __name__ == '__main__':
     # Setup options here
     parser = OptionParser()
     
-    parser.add_option('-p', '--port', default=8888, 
+    parser.add_option('-p', '--port', default=int(config["Port"]), 
                       help='Port to run web server on')
     
     parser.add_option('-v', '--verbose', default=False, action='store_true', 
                       help='Enable verbose logging')
     
-    parser.add_option('--robot', default='10.39.66.1', 
+    parser.add_option('--robot', default=config["RobotIP"], 
                       help="Robot's IP address")
     
     parser.add_option('--dashboard', default=False, action='store_true',

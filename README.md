@@ -10,6 +10,8 @@ Then, run `./tornado_server.py`
 
 You will need python to run this.
 
-Then, connect to `localhost:8888/index.html` in a browser.
+Then, connect to `localhost:8000/index.html` in a browser.
 
-Still working on some basic display functionality.
+To change the default robot IP (by default is `10.39.66.1`), change it in `config.json`. You can also change the port, then connect to `localhost:$port`
+
+

@@ -6,7 +6,7 @@
 	<body>
 
 		<!--  NetworkTables libraries  -->
-		<script src="/networktables/networktables.js"></script>
+		<script src="./lib/networktables.js"></script>
 
 		<!--  JQuery  -->
 		<script src="./lib/jquery.js"></script>
@@ -60,18 +60,19 @@
 		</div>
 
 		<script type="text/javascript">
-			$(document).ready(function(){
-				
-				// sets a function that will be called when the websocket connects/disconnects
-				NetworkTables.addWsConnectionListener(onNetworkTablesConnection, true);
-				
-				// sets a function that will be called when the robot connects/disconnects
-				NetworkTables.addRobotConnectionListener(onRobotConnection, true);
-				
-				// sets a function that will be called when any NetworkTables key/value changes
-				NetworkTables.addGlobalListener(onValueChanged, true);
-			});
+"use strict";
 
+$(document).ready(function(){
+
+	// sets a function that will be called when the websocket connects/disconnects
+	NetworkTables.addWsConnectionListener(onNetworkTablesConnection, true);
+	
+	// sets a function that will be called when the robot connects/disconnects
+	NetworkTables.addRobotConnectionListener(onRobotConnection, true);
+	
+	// sets a function that will be called when any NetworkTables key/value changes
+	NetworkTables.addGlobalListener(onValueChanged, true);
+});
 
 			function onRobotConnection(connected) {
 				//Sets the info to checked
@@ -84,16 +85,18 @@
 			}
 
 			function onValueChanged(key, value, isNew) {
+				console.log("Value changed");
 				//We create a new div in the table
 				if (isNew) {
 					//Create new list item
+					var di = $('<div class="card card-2 noextra"></div>');
 					var li = $('<li class="mdl-list__item status"></li>').appendTo('#networktable');
 					//set the two spans
 					$('<span class="mdl-list__item-primary-content"></span>').attr('id', NetworkTables.keySelector(key) + "tablepath").text(key).appendTo(li);
 					$('<span class="mdl-list__item-secondary-content"></span>').attr('id', NetworkTables.keySelector(key) + "table").text(value).appendTo(li);
 				} else {
 					//Update the value
-					document.getElementById(NetworkTables.keySelector(key) + "table").textContent = value;
+					$('#' + NetworkTables.keySelector(key) + "table").text(value);
 				}
 			}
 		</script>

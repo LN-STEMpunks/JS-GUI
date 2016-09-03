@@ -1,8 +1,17 @@
-#!/usr/bin/env python
 '''
-    Set your defaults in `config.json`
+    Allows you to launch a pynetworktables2js server without copying
+    any python code. Just install, and do::
+    
+        python -m pynetworktables2js
+        
+    Or on Windows:
+    
+        py -m pynetworktables2js
 '''
 
+from __future__ import print_function
+
+import os
 from os.path import abspath, dirname, exists, join
 from optparse import OptionParser
 
@@ -10,15 +19,9 @@ import tornado.web
 from tornado.ioloop import IOLoop
 
 from networktables import NetworkTable
-from pynetworktables2js import get_handlers, NonCachingStaticFileHandler
+from . import get_handlers, NonCachingStaticFileHandler
 
 import logging
-import json
-from pprint import pprint
-
-with open('config.json') as data_file:    
-    config = json.load(data_file)
-
 logger = logging.getLogger('dashboard')
 
 log_datefmt = "%H:%M:%S"
@@ -38,23 +41,23 @@ def init_networktables(options):
     logger.info("Networktables Initialized")
 
 
-if __name__ == '__main__':
+def main():
 
     # Setup options here
     parser = OptionParser()
     
-    parser.add_option('-p', '--port', default=int(config["Port"]), 
+    parser.add_option('-p', '--port', default=8888, 
                       help='Port to run web server on')
     
     parser.add_option('-v', '--verbose', default=False, action='store_true', 
                       help='Enable verbose logging')
     
-    parser.add_option('--robot', default=config["RobotIP"], 
+    parser.add_option('--robot', default='127.0.0.1', 
                       help="Robot's IP address")
     
     parser.add_option('--dashboard', default=False, action='store_true',
                       help='Use this instead of --robot to receive the IP from the driver station. WARNING: It will not work if you are not on the same host as the DS!')
-    
+        
     options, args = parser.parse_args()
     
     # Setup logging
@@ -69,7 +72,7 @@ if __name__ == '__main__':
     init_networktables(options)
     
     # setup tornado application with static handler + networktables support
-    www_dir = abspath(join(dirname(__file__), 'www'))
+    www_dir = abspath(os.getcwd())
     index_html = join(www_dir, 'index.html')
 
     if not exists(www_dir):
@@ -77,7 +80,7 @@ if __name__ == '__main__':
         exit(1)
 
     if not exists(index_html):
-        logger.warn("%s not found" % index_html)
+        logger.warn("%s not found", index_html)
     
     app = tornado.web.Application(
         get_handlers() + [
@@ -91,3 +94,6 @@ if __name__ == '__main__':
 
     app.listen(options.port)
     IOLoop.current().start()
+
+if __name__ == '__main__':
+    main()

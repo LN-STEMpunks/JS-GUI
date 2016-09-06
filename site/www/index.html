@@ -106,7 +106,7 @@ $(document).ready(function(){
 					$('<span class="mdl-list__item-secondary-content"></span>').attr('id', NetworkTables.keySelector(key) + "table").text(value).appendTo(li);
 				} else {
 					//Update the value
-					$('#' + NetworkTables.keySelector(key) + "table").text(value);
+					document.getElementById(NetworkTables.keySelector(key) + "table").innerHTML = value;
 				}
 			}
 		</script>

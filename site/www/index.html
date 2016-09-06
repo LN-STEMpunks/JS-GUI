@@ -39,7 +39,7 @@
 					<span class="mdl-list__item-primary-content">Robot</span>
 					<span class="mdl-list__item-secondary-action">
 						<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="robotinfo">
-							<input type="checkbox" id="robotinfo" class="mdl-checkbox__input"  checked=false/>
+							<input type="checkbox" id="robotinfo" class="mdl-checkbox__input" checked=false/>
 						</label>
 					</span>
 				</li>
@@ -76,11 +76,21 @@ $(document).ready(function(){
 
 			function onRobotConnection(connected) {
 				//Sets the info to checked
+				if (connected) {
+					console.log('Connected to robot');
+				} else {
+					console.log('Disconnected to robot');
+				}
 				$("#robotinfo").prop("checked", connected);
 			}
 
 			function onNetworkTablesConnection(connected) {
 				//Sets the info to checked
+				if (connected) {
+					console.log('Connected to NetworkTables');
+				} else {
+					console.log('Disconnected to NetworkTables');
+				}
 				$("#networktablesinfo").prop("checked", connected);
 			}
 

@@ -48,7 +48,7 @@ if __name__ == '__main__':
     parser.add_option('-v', '--verbose', default=False, action='store_true', 
                       help='Enable verbose logging')
     
-    parser.add_option('--robot', default='127.0.0.1', 
+    parser.add_option('--robot', default='10.39.66.1', 
                       help="Robot's IP address")
     
     parser.add_option('--dashboard', default=False, action='store_true',
